@@ -1,6 +1,15 @@
-web:
-  restart: always
-  build: .
-  ports:
-    - 8000:8000
-  command: python -m gistapi.gistapi
+services:
+  web:
+    restart: always
+    build: .
+    ports:
+      - 8000:8000
+    command: python -m gistapi.gistapi
+    depends_on:
+      - cache
+    environment:
+      - WITH_REDIS=True
+
+  cache:
+    restart: always
+    image: redis

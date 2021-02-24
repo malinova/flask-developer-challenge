@@ -42,6 +42,8 @@ pyopenssl==20.0.1
     # via
     #   -r requirements.in
     #   ndg-httpsclient
+redis==3.5.3
+    # via -r requirements.in
 requests==2.25.1
     # via -r requirements.in
 six==1.15.0
