@@ -55,6 +55,7 @@ def gists_for_user(username):
         the above URL for details of the expected structure.
     """
 
+    # Github API limit per page (from the docs)
     per_page=100
     page=1
     gists_url = 'https://api.github.com/users/{username}/gists?per_page={per_page}&page={page}'.format(
@@ -82,6 +83,7 @@ def gists_for_user(username):
             all_gists += response.json()
         
     except:
+        traceback.print_exc()
         raise ExternalError()
 
     return all_gists
