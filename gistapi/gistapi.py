@@ -10,6 +10,7 @@ providing a search across all public Gists for a given Github account.
 """
 
 import requests
+import re
 from flask import Flask, jsonify, request
 
 
@@ -45,6 +46,8 @@ def gists_for_user(username):
 
     return response.json()
 
+def fetch_gist_content(raw_url):
+    return requests.get(raw_url)
 
 @app.route("/api/v1/search", methods=['POST'])
 def search():
@@ -68,16 +71,24 @@ def search():
     gists = gists_for_user(username)
     # BONUS: Handle invalid users?
 
+    matching=[]
     for gist in gists:
         # REQUIRED: Fetch each gist and check for the pattern
+        for filename in gist[u"files"].keys():
+            content = fetch_gist_content(gist[u'files'][filename][u'raw_url'])
+            match = re.match(pattern, content.text)
+            if match:
+                matching.append(gist[u'html_url'])
+                break
+
         # BONUS: What about huge gists?
         # BONUS: Can we cache results in a datastore/db?
-        pass
+        
 
     result['status'] = 'success'
     result['username'] = username
     result['pattern'] = pattern
-    result['matches'] = []
+    result['matches'] = matching
 
     return jsonify(result)
 
